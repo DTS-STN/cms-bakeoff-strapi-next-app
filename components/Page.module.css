@@ -1,0 +1,90 @@
+.container {
+    min-height: 100vh;
+    padding: 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.pageImage{
+    border-radius: 100%;
+}
+
+.pageTitle {
+    font-size: 2.5em;
+    font-family: "Open Sans",sans-serif;
+}
+
+.langButton {
+    position: relative;
+    top: 5px;
+    align-self: end;
+    width: 100px;
+    height: 30px;
+    border-radius: 25px;
+    background-color: black;
+    color: white;
+    border: 0;
+    cursor: pointer;
+}
+
+.langButton:hover {
+    background-color: #24292e;
+}
+
+.pageDescription {
+    width: 800px;
+    display: flex;
+    justify-content: center;
+    text-align: left;
+}
+.navPage{
+    margin: 4px 0;
+    display: flex;
+}
+
+
+.navPage a {
+    margin: 0 4px;
+    color: #1ea7fd;
+}
+
+@media only screen and (max-width: 1200px) {
+    .pageDescription {
+        width: 800px;
+    }
+    .pageTitle{
+        font-size: 2.5em;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .pageDescription {
+        width: 600px;
+    }
+    .pageTitle{
+        font-size: 2em;
+    }
+    .navPage{
+        flex-direction: column;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .pageDescription {
+        width: 400px;
+    }
+    .pageTitle{
+        font-size: 1.5em;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .pageDescription {
+        width: 300px;
+    }
+    .pageTitle{
+        font-size: 1.3em;
+    }
+}

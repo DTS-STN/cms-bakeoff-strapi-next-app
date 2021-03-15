@@ -1,65 +1,63 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { useState } from "react";
+import { Page } from "../components/Page";
+import { fetchPagesMemo, generateNav } from "../lib/fetchPages";
+import { fetchPostsMemo } from "../lib/fetchPosts";
+import { fetchTagsMemo } from "../lib/fetchTags";
+import { TagGrid } from "../components/TagGrid";
+import { CardGrid } from "../components/CardGrid";
+import { useRouter } from "next/router";
 
-export default function Home() {
+export async function getStaticProps() {
+  const posts = await fetchPostsMemo();
+  const pages = await fetchPagesMemo();
+  const tags = await fetchTagsMemo();
+  return {
+    props: {
+      pages: pages[2],
+      tags: tags[2].map((tag) => {
+        return { ...tag, image: tag.previewImage };
+      }),
+      posts: posts[2],
+    },
+  };
+}
+
+export default function Home({ pages, tags, posts }) {
+  const [language, setLanguage] = useState("en");
+  const router = useRouter();
+  const links = generateNav(pages, language);
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Page
+      lang={language}
+      image="/vercel.svg"
+      title={language === "en" ? "Home" : "Accueil"}
+      links={links}
+      onLanguageClick={() => {
+        setLanguage(language === "en" ? "fr" : "en");
+      }}
+    >
+      <div className="homeContainer">
+        <h2>Tags</h2>
+        <TagGrid
+          classNames="tagCenter"
+          tags={tags.filter((tag) => tag.lang === language)}
+          onClick={(id) => {
+            router.push(`/tags/${id}`);
+          }}
+          size="large"
+        />
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+        <h2>Posts</h2>
+        <CardGrid
+          cards={posts.filter((post) => post.lang === language)}
+          onClickCard={(id) => {
+            router.push(`/posts/${id}`);
+          }}
+          onClickTag={(id) => {
+            router.push(`/tags/${id}`);
+          }}
+        />
+      </div>
+    </Page>
+  );
 }
